@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "productivity",
+  "descrition": "App for productivity",
+  "version": "0.1",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "src/background.ts"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "src/block.ts"
+      ]
+    }
+  ],
+  "action": {
+    "default_title": "I dont know what im doing",
+    "default_popup": "popup.html"
+  }
+}
