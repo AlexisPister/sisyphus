@@ -1,0 +1,1 @@
+chrome.action.onClicked.addListener(async e=>{e.id&&chrome.tabs.sendMessage(e.id,{toggleVisible:!0})});async function r(){const[e]=await chrome.tabs.query({active:!0,currentWindow:!0});return console.log({tab:e}),e}chrome.runtime.onMessage.addListener((e,n,t)=>{switch(e.type){case"POPUP_INIT":return r().then(t),!0}});

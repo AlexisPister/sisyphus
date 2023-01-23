@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import {computed, onBeforeMount, Ref, ref, toRaw} from "vue";
 import axios from "axios";
-import {getCurrentWeek} from "../utils";
+import {getCurrentWeek, getHostname} from "../utils";
 
 const urlsBlocked: Ref<Array<URL>> = ref([]);
-const newSite: Ref<String> = ref('');
+const newSite: Ref<string> = ref('');
 let isLoggedInTwitter: Ref<Boolean> = ref(false);
-let message: Ref<String> = ref('');
-let isWeekStarted: Ref<String> = ref(false);
+let message: Ref<string> = ref('');
+let isWeekStarted: Ref<Boolean> = ref(false);
 
 
 // DELETE FOR TESTS
@@ -26,7 +26,6 @@ function getIfProductivityStarted(): void {
         if (weekToStarted && weekToStarted.length > 0) {
           const currentWeek = getCurrentWeek();
           isWeekStarted.value = weekToStarted[currentWeek];
-          console.log("ST ", isWeekStarted);
           return isWeekStarted;
         } else {
           return false;
@@ -46,16 +45,16 @@ function fillUrlsFromStorage(): void {
 }
 
 function addUrl(): void {
-  let newSiteUrl = toUrl(newSite.value);
-  urlsBlocked.value.push(newSiteUrl);
+  console.log(1, newSite.value)
+  let hostName = getHostname(newSite.value);
+  console.log(2, hostName)
+  let newSiteUrl: URL = toUrl(hostName);
+  console.log(3, newSiteUrl)
   if (newSiteUrl) {
+    urlsBlocked.value.push(newSiteUrl);
     let sites = toRaw(urlsBlocked.value).map(v => v.href);
     console.log("ds ", sites)
-    chrome.storage.sync.set({urls: sites}).then((result) => {
-      chrome.storage.sync.get(["urls"]).then((result) => {
-        console.log("RESULTS JUST SAVED: ", result.urls)
-      });
-    });
+    chrome.storage.sync.set({urls: sites})
   } else {
     console.log("not url format")
   }
@@ -92,9 +91,9 @@ function loginWithTwitter() {
   }
 }
 
-async function checkLoggedInTwitter(): void {
+function checkLoggedInTwitter(): void {
   console.log("Is logged")
-  return axios.get('http://localhost:8080/twitter/check-auth')
+  axios.get('http://localhost:8080/twitter/check-auth')
       .then(response => {
         if (response.data.isAuth) {
           console.log("COOOK ", document.cookie);
@@ -151,7 +150,7 @@ setInterval(checkLoggedInTwitter, 2000);
 
     <div>
       <!--          <button @click="urlBlocked.push(newSite)">Add</button>-->
-      <button @click="clear">Clear</button>
+      <button :disabled="isWeekStarted" @click="clear">Clear</button>
     </div>
 
     <div>
@@ -163,11 +162,6 @@ setInterval(checkLoggedInTwitter, 2000);
   <div>
     <p v-if="isLoggedInTwitter">Logged in Twitter.</p>
     <button v-else id='loginTwitterButton' @click="loginWithTwitter">Log with Twitter</button>
-  </div>
-
-  <div>
-    <!--    <input v-model="message" placeholder="edit me" />-->
-    <button @click="postTweet">BUT</button>
   </div>
 
 </template>

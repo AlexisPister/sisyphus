@@ -23,6 +23,6 @@
   ],
   "action": {
     "default_title": "I dont know what im doing",
-    "default_popup": "popup.html"
+    "default_popup": "src/popup.html"
   }
 }

@@ -5,14 +5,29 @@ function getCurrentWeek(): number {
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 }
 
-function getHostname(url: string | URL): string {
-    let hostname: string;
-    if (typeof url === 'string') {
-        hostname = new URL(url).hostname;
-    } else {
-        hostname = url.hostname;
+function getHostname(url: string | URL): string | undefined {
+  if (!url) {
+    return undefined;
+  }
+
+  let hostname: string;
+  if (typeof url === 'string') {
+    if (!url.trim()) {
+      return undefined;
     }
-    return hostname;
+
+    try {
+      const parsedUrl = new URL(url.startsWith('http') ? url : `http://${url}`);
+      hostname = parsedUrl.hostname;
+    } catch (error) {
+      return undefined;
+    }
+  } else if (url instanceof URL) {
+    hostname = url.hostname;
+  } else {
+    return undefined;
+  }
+  return hostname;
 }
 
 

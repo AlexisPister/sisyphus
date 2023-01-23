@@ -1,0 +1,1 @@
+chrome.storage.sync.get({urls:[]}).then(e=>{console.log(e.urls),console.log(window.location.origin),e.urls.includes(window.location.origin)&&n()&&o()});function o(){console.log("HIDE");let e=document.querySelector("body");e.style.display="none"}function n(){let e=new Date;return e.getHours(),e.getMinutes(),!0}
