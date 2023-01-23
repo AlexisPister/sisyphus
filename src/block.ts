@@ -1,7 +1,6 @@
 import {getHostname} from "./utils";
 
 chrome.storage.sync.get({"urls": []}).then((result) => {
-
     let hostNames = result.urls.map(url => getHostname(url));
 
     console.log("blocked urls ", result.urls);

@@ -3,7 +3,8 @@ import {computed, onBeforeMount, Ref, ref, toRaw} from "vue";
 import axios from "axios";
 import {getCurrentWeek, getHostname} from "../utils";
 
-const urlsBlocked: Ref<Array<URL>> = ref([]);
+// const urlsBlocked: Ref<Array<URL>> = ref([]);
+const urlsBlocked: Ref<Array<string>> = ref([]);
 const newSite: Ref<string> = ref('');
 let isLoggedInTwitter: Ref<Boolean> = ref(false);
 let message: Ref<string> = ref('');
@@ -38,22 +39,22 @@ function fillUrlsFromStorage(): void {
   chrome.storage.sync.get(["urls"]).then((result) => {
     if (result.urls && result.urls.length > 0) {
       result.urls.forEach(url => {
-        urlsBlocked.value.push(new URL(url));
+        // urlsBlocked.value.push(new URL(url));
+        urlsBlocked.value.push(url);
       })
     }
   });
 }
 
 function addUrl(): void {
-  console.log(1, newSite.value)
   let hostName = getHostname(newSite.value);
-  console.log(2, hostName)
-  let newSiteUrl: URL = toUrl(hostName);
-  console.log(3, newSiteUrl)
-  if (newSiteUrl) {
-    urlsBlocked.value.push(newSiteUrl);
-    let sites = toRaw(urlsBlocked.value).map(v => v.href);
-    console.log("ds ", sites)
+  // let newSiteUrl: URL = toUrl(hostName);
+  if (hostName) {
+    urlsBlocked.value.push(hostName);
+    // let sites = toRaw(urlsBlocked.value).map(v => v.href);
+    let sites = toRaw(urlsBlocked.value)
+    // console.log("ds ", sites)
+    // chrome.storage.sync.set({urls: sites})
     chrome.storage.sync.set({urls: sites})
   } else {
     console.log("not url format")
