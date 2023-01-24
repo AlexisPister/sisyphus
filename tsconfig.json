@@ -10,5 +10,7 @@
       "@/*": ["src/*"]
     },
     "outDir": "dist"
-  }
+  },
+  "include": ["src/*/**"],
+  "files": ["globals.d.ts"]
 }
